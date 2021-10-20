@@ -86,5 +86,9 @@ fun CreateProjectPage(
             value = null
         ) {}
 
+        Spacer(modifier = Modifier.height(spaceHeight))
+
+        KnitFormUI.PictureField()
+
     }
 }
