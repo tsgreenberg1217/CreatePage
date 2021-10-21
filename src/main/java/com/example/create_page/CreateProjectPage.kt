@@ -1,11 +1,15 @@
 package com.example.create_page
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.knitpack_components.BottomSheetUI
@@ -17,9 +21,10 @@ import com.tgreenberg.core.models.UIKnittingProject
 
 @Composable
 fun CreateProjectPage(
+    knittingProjectViewModel: KnittingProjectViewModel,
+    launchImage: (String) -> Unit,
     submitProject: (ProjectTxt) -> Unit
 ) {
-    val knittingProjectViewModel: KnittingProjectViewModel = hiltViewModel()
 
     val project: UIKnittingProject = knittingProjectViewModel.knittingProject.value
     val spaceHeight = 35.dp
@@ -34,7 +39,7 @@ fun CreateProjectPage(
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Top,
     ) {
-        val (showDialog, setShowDialog) = remember{ mutableStateOf(false)}
+        val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
 
         BottomSheetUI.ListSelectDialog(
             showDialog = showDialog,
@@ -88,7 +93,9 @@ fun CreateProjectPage(
 
         Spacer(modifier = Modifier.height(spaceHeight))
 
-        KnitFormUI.PictureField()
+        KnitFormUI.PictureField(knittingProjectViewModel.knittingProject.value.images) {
+            launchImage("image/*")
+        }
 
     }
 }
