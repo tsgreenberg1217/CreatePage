@@ -3,9 +3,11 @@ package com.example.create_page
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tgreenberg.core.models.KnitUri
 import com.tgreenberg.core.models.UIKnittingProject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,9 +28,15 @@ class KnittingProjectViewModel @Inject constructor() : ViewModel() {
     }
 
     fun setKnitProjectImage(value: KnitUri) {
-        val newArray = knittingProject.value.images.toMutableList()
-        newArray[0] = value
-        knittingProject.value = knittingProject.value.copy(images = newArray)
+        knittingProject.value.images.toMutableList().apply { add(value) }.also {
+            knittingProject.value = knittingProject.value.copy(images = it)
+        }
+    }
+
+    fun submitProject(){
+        viewModelScope.launch {
+            KnitPackApi.postProject(knittingProject.value)
+        }
     }
 
 }

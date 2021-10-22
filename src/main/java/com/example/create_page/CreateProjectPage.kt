@@ -3,18 +3,30 @@ package com.example.create_page
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.knitpack_components.BottomSheetUI
 import com.example.knitpack_components.KnitFormUI
+import com.example.knitpack_components.MulberryButton
 import com.example.knitpack_components.patternsList
+import com.example.knitpacktheme.theme.Mulberry_Primary
+import com.example.knitpacktheme.theme.Off_Black
+import com.example.knitpacktheme.theme.Off_White
 import com.tgreenberg.core.models.ProjectTxt
 import com.tgreenberg.core.models.UIKnittingProject
 
@@ -23,7 +35,7 @@ import com.tgreenberg.core.models.UIKnittingProject
 fun CreateProjectPage(
     knittingProjectViewModel: KnittingProjectViewModel,
     launchImage: (String) -> Unit,
-    submitProject: (ProjectTxt) -> Unit
+    submitProject: () -> Unit
 ) {
 
     val project: UIKnittingProject = knittingProjectViewModel.knittingProject.value
@@ -96,6 +108,10 @@ fun CreateProjectPage(
         KnitFormUI.PictureField(knittingProjectViewModel.knittingProject.value.images) {
             launchImage("image/*")
         }
+
+        Spacer(modifier = Modifier.height(spaceHeight))
+
+        MulberryButton(text = "Create!") { submitProject() }
 
     }
 }
