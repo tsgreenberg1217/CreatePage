@@ -27,6 +27,14 @@ class KnittingProjectViewModel @Inject constructor() : ViewModel() {
         knittingProject.value = knittingProject.value.copy(description = value)
     }
 
+    fun setPattern(value: String) {
+        knittingProject.value = knittingProject.value.copy(pattern = value)
+    }
+
+    fun setYarn(value: String) {
+        knittingProject.value = knittingProject.value.copy(yarn = value)
+    }
+
     fun setKnitProjectImage(value: KnitUri) {
         knittingProject.value.images.toMutableList().apply { add(value) }.also {
             knittingProject.value = knittingProject.value.copy(images = it)

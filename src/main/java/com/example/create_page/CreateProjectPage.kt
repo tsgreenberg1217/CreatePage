@@ -21,10 +21,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.knitpack_components.BottomSheetUI
-import com.example.knitpack_components.KnitFormUI
-import com.example.knitpack_components.MulberryButton
-import com.example.knitpack_components.patternsList
+import com.example.knitpack_components.*
 import com.example.knitpacktheme.theme.Mulberry_Primary
 import com.example.knitpacktheme.theme.Off_Black
 import com.example.knitpacktheme.theme.Off_White
@@ -40,9 +37,12 @@ fun CreateProjectPage(
 ) {
 
     val project: UIKnittingProject = knittingProjectViewModel.knittingProject.value
+
     val spaceHeight = 35.dp
 
     val scrollState = rememberScrollState()
+    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    var choicesList = remember { mutableListOf<DialogChoice>() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -52,15 +52,23 @@ fun CreateProjectPage(
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Top,
     ) {
-        val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
 
         BottomSheetUI.ListSelectDialog(
             showDialog = showDialog,
-            choices = patternsList,
+            choices = choicesList,
             setShowDialog = setShowDialog
-        )
-
-
+        ) {
+            knittingProjectViewModel.run {
+                when (it) {
+                    is DialogChoice.PatternChoice -> {
+                        setPattern(it.value)
+                    }
+                    is DialogChoice.YarnChoice -> {
+                        setYarn(it.value)
+                    }
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(spaceHeight))
 
@@ -92,8 +100,10 @@ fun CreateProjectPage(
 
         KnitFormUI.KnittingDialogLauncher(
             title = "Pattern",
-            value = "Chunky Herringbone snood"
+            value = project.pattern
         ) {
+            choicesList.clear()
+            choicesList.addAll(patternsList.mapToPatternChoice())
             setShowDialog(true)
         }
 
@@ -101,8 +111,13 @@ fun CreateProjectPage(
 
         KnitFormUI.KnittingDialogLauncher(
             title = "Yarn",
-            value = null
-        ) {}
+            value = project.yarn
+
+        ) {
+            choicesList.clear()
+            choicesList.addAll(yarnWeightList.mapToYarnChoice())
+            setShowDialog(true)
+        }
 
         Spacer(modifier = Modifier.height(spaceHeight))
 
